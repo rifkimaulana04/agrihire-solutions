@@ -1,0 +1,208 @@
+{% extends "index.html" %}
+{% block title %}AgriHire Solutions {% endblock %}
+
+{% block css %}
+<style>
+    .section-card {
+        border: 1px solid #ddd;
+        padding: 20px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        
+    }
+    .toggle-button {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-center mt-4">
+    <div class="container m-3">
+        <h3 class="mb-4">Booking Summary</h3>
+        <div class="mb-2">
+            <button class="toggle-button btn btn-light w-100" type="button" data-bs-toggle="collapse" data-bs-target="#booking_items" aria-expanded="false" aria-controls="booking_items">
+                View Booking Items
+                <i class="fas fa-chevron-down arrow"></i>
+            </button>
+        </div>
+        <!-- Booking items table -->
+        <div id="booking_items"  class="collapse mb-3">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Equipment</th>
+                        <th>Hire From</th>
+                        <th>Hire To</th>
+                        <th>Hire Rate</th>
+                        <th>Qty</th>
+                        <th>Discount</th>
+                        <th>Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cart_item in cart_items %}
+                    <tr>
+                        <td>{{ cart_item.name }}</td>
+                        <td>{{ cart_item.hire_from.strftime('%d %B %Y %I:%M %p') }}</td>
+                        <td>{{ cart_item.hire_to.strftime('%d %B %Y %I:%M %p') }}</td>
+                        <td>${{ cart_item.hire_rate }} per day</td>
+                        <td>{{ cart_item.qty }}</td>
+                        <td>{% if cart_item.discount != 0 %}-${{ cart_item.discount }}{% endif %}</td>
+                        <td>${{ cart_item.subtotal }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Booking Total Table -->
+        <div class="mt-3 mb-3">
+            <table class="table table-hover">
+                <tbody>
+                    {% if total_discount !=0 %}
+                    <tr>
+                        <th class="text-right">Total before discount</th>
+                        <th>${{ original_total }}</th>
+                    </tr>
+                    <tr>
+                        <th class="text-right">Discount applied</th>
+                        <th>-${{ total_discount }}</th>
+                    </tr>
+                    {% endif %}
+                    <tr>
+                        <th class="text-right">Includes GST of</th>
+                        <th>${{ total_gst }}</th>
+                    </tr>
+                    <tr>
+                        <th class="text-right">Total</th>
+                        <th>${{ cart_total }}</th>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+             <!-- Booking Form -->
+        <form action="{{url_for('submit_booking')}}" method="POST">
+   
+            <div class="row m-3">
+                <!-- Customer Information -->
+                <div id="customer_info" class="col-md-6">
+                    <div class="container  section-card">
+                        <h4>Customer Information</h4>
+                        <table class="table table-borderless">
+                            <tbody>
+                                <tr>
+                                    <th scope="row">First Name</th>
+                                    <td>{{ booking_customer.first_name }}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Last Name</th>
+                                    <td>{{ booking_customer.last_name }}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Email</th>
+                                    <td>{{ session['email'] }}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">{{ form.phone.label }}</th>
+                                    <td>{{ form.address_line_1(class="form-control", value=booking_customer.phone) }}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">{{ form.address_line_1.label }}</th>
+                                    <td>{{ form.address_line_1(class="form-control addy-line1", value=booking_customer.address_line1) }}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">{{ form.address_line_2.label }}</th>
+                                    <td>{{ form.address_line_2(readonly=True, class="form-control addy-line2", value=booking_customer.address_line2) }}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">{{ form.suburb.label }}</th>
+                                    <td>{{ form.suburb(readonly=True, class="form-control addy-suburb", value=booking_customer.suburb) }}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">{{ form.city.label }}</th>
+                                    <td>{{ form.city(readonly=True, class="form-control addy-city", value=booking_customer.city) }}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">{{ form.post_code.label }}</th>
+                                    <td>{{ form.post_code(readonly=True, class="form-control addy-postcode", value=booking_customer.post_code) }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Payment Details -->
+                <div id="payment_info" class="col-md-6 section-card">
+                    <div class="container">
+                        <h4>Payment Details</h4>
+                        <div class="form-group">
+                            {{ form.card_number.label }}
+                            {{ form.card_number(class="form-control") }}
+                        </div>
+                        <div class="form-group">
+                            {{ form.card_name.label }}
+                            {{ form.card_name(class="form-control") }}
+                        </div>
+                        <div class="form-group">
+                            {{ form.card_expiry.label }}
+                            {{ form.card_expiry(class="form-control") }}
+                        </div>
+                        <div class="form-group">
+                            {{ form.card_cvv.label }}
+                            {{ form.card_cvv(class="form-control") }}
+                        </div>
+                        <div class="form-group mt-5">
+                            <h4>{{ form.note.label }}</h4>
+                            {{ form.note(class="form-control", rows="4") }}
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+
+            <div class="row m-3 align-items-center">
+                <div class="col"></div>
+                <div class="col-auto">
+                    <div class="form-group form-check">
+                        {{ form.accept_tnc(class="form-check-input") }}
+                        {{ form.accept_tnc.label(class="form-check-label") }}
+                    </div>
+                </div>
+                <div class="col-auto ms-auto">
+                    <button type="submit" class="btn btn-danger">Confirm Booking</button>
+                </div>
+            </div>
+
+            
+        </form>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script src="https://www.addysolutions.com/address-lookup/1.6.2/js/addy.min.js?nzKey=0b03871a239c441a9051681c83954653&country=nz&loadcss=true" async defer></script>
+<script>
+    // Toggle button arrow direction
+    document.querySelector('.toggle-button').addEventListener('click', function() {
+        const arrow = this.querySelector('.arrow');
+        const isCollapsed = this.getAttribute('aria-expanded') === 'true';
+        
+        // Directly checking the 'aria-expanded' state after the click event
+        setTimeout(() => {
+            const isNowCollapsed = this.getAttribute('aria-expanded') === 'true';
+            if (isNowCollapsed) {
+                arrow.classList.remove('fa-chevron-down');
+                arrow.classList.add('fa-chevron-up');
+            } else {
+                arrow.classList.remove('fa-chevron-up');
+                arrow.classList.add('fa-chevron-down');
+            }
+        }, 300); // Adjust delay as necessary to match the collapse animation
+    });
+</script>
+{% endblock %}

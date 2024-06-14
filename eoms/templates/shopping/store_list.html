@@ -1,0 +1,248 @@
+{% extends "index.html" %}
+{% block title %}AgriHire Solutions {% endblock %}
+
+{% block css %}
+<style>
+#map {
+    height: 600px;
+}  
+
+.dropdown-menu {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+</style>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-center mt-4">
+    <div class="container m-3">
+        <h1 class="mb-4">Find an AgriHire Store</h1>
+        
+        <form id="search-form">
+            <div class="row m-4">
+                <div class="col-8">
+                    <input type="search" class="form-control" id="searchInput" name="search" placeholder="Enter postcode, suburb, town or city" oninput="searchPostCode()">
+                </div>
+                <!-- <div class="col-2">
+                    <button onclick="findStoresNearMe()" class="btn btn-danger">Store near me</button>
+                </div> -->
+                <div class="col-2">
+                    <a class="btn bg-danger text-white" href="{{url_for('view_stores')}}">View all stores</a>
+                </div>
+            </div>
+            <div id="result-dropdown" class="dropdown-menu"></div>
+        </form>
+        <div class="row m-3">
+            <div class="col-4" id="store-results">
+                {% for store in stores %}
+                    <div class="card m-3">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ store.store_name }}</h5>
+                            <p class="card-text">
+                                <i class="fa-solid fa-location-dot"></i>
+                                {{ store.address_line1 }}, 
+                                {% if store.address_line2 %} {{ store.address_line2 }},{% endif %}
+                                {{ store.suburb }}, {{ store.city }} {{ store.post_code }}
+                            </p>
+                            <p class="card-text">
+                                <i class="fa-solid fa-clock"></i>
+                                Today 6am - 5pm
+                            </p>
+                            <p class="card-text">
+                                <i class="fa-solid fa-phone"></i>
+                                {{ store.phone }}
+                            </p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="col-8" id="map">
+                <div ></div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script>
+
+    function searchPostCode() {
+        const query = document.getElementById('searchInput').value;
+        if (query.length < 3) {
+            document.getElementById('result-dropdown').classList.remove('show');
+            return;
+        }
+
+        fetch(`{{url_for('search_post_code')}}?q=${query}`, {
+            headers: {
+                'Accept': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            const dropdown = document.getElementById('result-dropdown');
+            dropdown.innerHTML = '';
+            if (data.postcodes && data.postcodes.length > 0) {
+                data.postcodes.forEach(postcode => {
+                    const item = document.createElement('a');
+                    item.className = 'dropdown-item';
+                    item.textContent = `${postcode.postcode} ${postcode.suburb}, ${postcode.city}`;
+                    item.onclick = () => selectItem(postcode);
+                    dropdown.appendChild(item);
+                });
+                dropdown.classList.add('show');
+            } else {
+                dropdown.classList.remove('show');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById('result-dropdown').classList.remove('show');
+        });
+    }
+
+    function selectItem(postcode) {
+        itemText = `${postcode.postcode} ${postcode.suburb}, ${postcode.city}`
+        document.getElementById('searchInput').value = itemText;
+        document.getElementById('result-dropdown').classList.remove('show');
+        fetchStores(itemText+' New Zealand');
+    }
+
+    function fetchStores(query) {
+        fetch(`/stores/json?search=${query}`)
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('store-results').innerHTML = '';
+                data.forEach(store => {
+                    document.getElementById('store-results').innerHTML += `
+                        <div class="card m-3">
+                            <div class="card-body">
+                                <h5 class="card-title">${store.store_name}</h5>
+                                <p class="card-text">
+                                    <i class="fa-solid fa-location-dot"></i>
+                                    ${store.address_line1}, 
+                                    ${store.address_line2 ? `${store.address_line2},` : ''}
+                                    ${store.suburb}, ${store.city} ${store.post_code}
+                                </p>
+                                <p class="card-text">
+                                    <i class="fa-solid fa-clock"></i>
+                                    Today 6am - 5pm
+                                </p>
+                                ${store.phone ? `<p class="card-text"><i class="fa-solid fa-phone"></i> ${store.phone}</p>` : ''}
+                            </div>
+                        </div>
+                    `;
+                });
+                if (data.length > 0) {
+                    map.setView([data[0].lat, data[0].lng], 10); // Center map to the first result
+                    addMarkers(data); // Update map markers
+                }
+            });
+    }
+
+    function fetchStoresNearby(lat, lon) {
+        fetch(`/stores/json?lat=${lat}&lon=${lon}`)
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('store-results').innerHTML = '';
+                data.forEach(store => {
+                    document.getElementById('store-results').innerHTML += `
+                        <div class="card m-3">
+                            <div class="card-body">
+                                <h5 class="card-title">${store.store_name}</h5>
+                                <p class="card-text">
+                                    <i class="fa-solid fa-location-dot"></i>
+                                    ${store.address_line1}, 
+                                    ${store.address_line2 ? `${store.address_line2},` : ''}
+                                    ${store.suburb}, ${store.city} ${store.post_code}
+                                </p>
+                                <p class="card-text">
+                                    <i class="fa-solid fa-clock"></i>
+                                    Today 6am - 5pm
+                                </p>
+                                ${store.phone ? `<p class="card-text"><i class="fa-solid fa-phone"></i> ${store.phone}</p>` : ''}
+                            </div>
+                        </div>
+                    `;
+                });
+                if (data.length > 0) {
+                    addMarkers(data); // Update map markers
+                }
+            });
+    }
+
+    // Function to handle "Store Near Me" button click
+    function findStoresNearMe() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+                console.log(lat, lon)
+                map.setView([lat, lon], 10);
+                fetchStoresNearby(lat, lon);
+                
+            }, function(error) {
+                console.error('Error getting user location:', error);
+            });
+        } else {
+            console.error('Geolocation is not supported by this browser.');
+        }
+    }
+
+    function addMarkers(stores) {
+        markers.clearLayers(); // Clear previous markers
+        stores.forEach(store => {
+            // Check if latitude and longitude are valid
+            if (store.lat && store.lng) {
+                const marker = L.marker([store.lat, store.lng])
+                    .bindPopup(`
+                        <b>${store.store_name}</b><br>
+                        ${store.address_line1}, ${store.address_line2 ? store.address_line2 + ', ' : ''}${store.suburb}, ${store.city} ${store.post_code}<br>
+                        Today 6am - 5pm<br>
+                        ${store.phone ? `<i class="fa-solid fa-phone"></i> ${store.phone}<br>` : ''}
+                    `)
+                    .addTo(markers);
+            }
+        });
+    }
+
+    const allStores = {{ stores | tojson }};
+    console.log(allStores)
+    const defaultLocation = [-40.9006, 174.886];
+    const defaultZoomLevel = 5;
+
+    const map = L.map('map').setView(defaultLocation, defaultZoomLevel);
+    const markers = L.layerGroup().addTo(map);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Define the bounds for New Zealand
+    const nzBounds = L.latLngBounds(
+        L.latLng(-47.35, 166.3), // Southwest corner of NZ
+        L.latLng(-33.9, 178.55)  // Northeast corner of NZ
+    );
+
+    // Fit the map to the bounds of New Zealand
+    // map.fitBounds(nzBounds);
+
+    let lastCenter = null;
+
+    map.on('moveend', function() {
+        const center = map.getCenter();
+        const lat = center.lat;
+        const lon = center.lng;
+        fetchStoresNearby(lat, lon);
+    });
+
+    // Initial load
+    addMarkers(allStores);
+</script>
+{% endblock %}

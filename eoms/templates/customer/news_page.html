@@ -1,0 +1,29 @@
+{% extends "index.html" %}
+{% block title %}AgriHire Solutions {% endblock %}
+
+{% block css %}
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-center mt-4">
+    <div class="container m-3">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('home') }}">Home</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('view_news_list') }}">News List</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{news_details.title}}</li>
+            </ol>
+        </nav>
+        <h1 class="mb-4">{{ news_details.title}}</h1>
+         <article>
+            <p>{{news_details.store_name}}&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp{{ news_details.create_date.strftime('%d/%m/%Y %H:%M:%S')}}</p>
+            <p>{{ news_details.content}}</p>
+         </article>
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+<script>
+
+</script>
+{% endblock %}

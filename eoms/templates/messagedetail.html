@@ -1,0 +1,48 @@
+<form id="messgaeform" method="post"  action="/submitMsg">
+    <input type="hidden" id="submitMessageID" name="id" value="{{msgId}}">
+
+    <div >
+            <div class="row">
+                <div class="col-2">
+                    {{msgList.last_name}} :
+                </div>
+                <div class="col-6">
+                    <div class="border rounded-3 m-3 p-2">
+                        <span >
+                            {{msgList.content}}
+                        </span>
+                    </div>
+                </div>
+                <p class="text-start fw-light mx-3" style="font-size: smaller;">{{msgList.create_date.strftime('%d/%m/%Y %H:%M:%S')}}</p>
+            </div>
+            {% if msgList.reply %}
+            <div class="row justify-content-end">
+                <div class="col-2">
+                    Staff :
+                </div>
+                <div class="col-6">
+                    <div class="border rounded-3 m-3 p-2">
+                        <span class="">
+                            {{msgList.reply}}
+                        </span>
+                    </div>
+                    <p class="text-end fw-light mx-3" style="font-size: smaller;">{{msgList.reply_date.strftime('%d/%m/%Y %H:%M:%S')}}</p>
+                </div>
+            </div>
+            {% endif %}
+        <input type="hidden" id="customer_id" name="customer_id" value="{{msgList.customer_id}}">
+        <input type="hidden" id="store_id" name="store_id" value="{{msgList.store_id}}">
+    </div>
+    
+    <div class="m-3 row">
+        <div class="col-8">
+            {% if msgList.status == 1  %}<input type="text" class="form-control" id="content" name="content" >{% endif %}
+        </div>
+        <div class="col-4">
+            {% if msgList.status == 1  %}<button type="submit" class="submitMsg btn btn-primary">Send</button> {% endif %}
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+        </div>
+    </div>
+  </form>
+
+    

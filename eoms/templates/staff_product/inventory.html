@@ -1,0 +1,96 @@
+{% extends "dashboard/index.html" %}
+
+{% block title %}Products Inventory{% endblock %}
+
+{% block css %}
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h3 class="text-center mb-0">View Product Inventory &nbsp;{% if store_name %} ({{ store_name }}) {% endif%}</h3><br>
+    <form method="post" action="{{ url_for('view_inventory') }}" class="row g-3 align-items-end">
+        <div class="col-md-2">
+            <label for="product_code" class="form-label">Product Code:</label>
+            <input class="form-control" type="text" id="product_code" name="product_code" value="{{ product_code }}">
+        </div>
+        <div class="col-md-2">
+            <label for="product_name" class="form-label">Product Name:</label>
+            <input class="form-control" type="text" id="product_name" name="product_name" value="{{ product_name }}">
+        </div>
+        <div class="col-md-2">
+            <label for="category_code" class="form-label">Category:</label>
+            <select class="form-control" id="category_code" name="category_code">
+                <option value="" {% if not category_code %} selected {% endif %}>All Categories</option>
+                {% for category in category_list %}
+                <option value="{{ category.category_code }}" {% if category_code==category.category_code %} selected {%
+                    endif %}>{{ category.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        {% if session['role'] == 'nmgr' or session['role'] == 'admin' %}
+                <div class="col-md-2 text-start">
+                    <label for="store_id" class="form-label">Store:</label>
+                    <select class="form-control" id="store_id" name="store_id">
+                        <option value="" {% if not store_id %} selected {% endif %}>All Stores:</option>
+                        {% for store in store_list %}
+                        <option value="{{ store.store_id | string }}" {% if store_id==(store.store_id | string) %} selected {%
+                            endif %}>{{ store.store_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            {% endif %}
+        <div class="col-md-3">
+            <button type="submit" class="btn btn-primary" data-toggle="tooltip" style="background: none; border: none;"
+                data-placement="top" title="Search"><i class="fas fa-search main-color mx-1"></i></button>
+        </div>
+    </form>
+    <form action="{{ url_for('view_inventory') }}"  method="POST">
+        <div class="input-group mb-2">
+            <span class="input-group-text">
+                Select a date
+            </span>
+            <input type="date" id="selected_date" name="selected_date" value="{{ selected_date }}" required>
+            <input type="submit" value="selected_date">
+        </div>
+    </form>
+    <hr>
+    <div style="height: 420px; overflow-y: auto;">
+        <table id="product_list" class="table table-advance table-hover">
+            <thead style="position: sticky;top: 0;z-index: 999;">
+                <tr>
+                    <th>#</th>
+                    <th>Product Code</th>
+                    <th>Category Name</th>
+                    <th>Product Name</th>
+                    <th>Total Quantities</th>
+                    <th>In Stock</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if inventory_list %}
+                {% for inventory in inventory_list %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ inventory.product_code }}</td>
+                    <td>{{ inventory.c_name }}</td>
+                    <td>{{ inventory.p_name }}</td>
+                    <td>{{ inventory.total_machine_quantities }}</td>
+                    <td>{{ inventory.in_stock }}</td>
+                </tr>
+                {% endfor %}
+                {% else %}
+                <tr>
+                    <td colspan="5" class="text-center">There is no data to be showed.</td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+{% endblock %}
+{% block js %}
+<script>
+</script>
+{% endblock %}

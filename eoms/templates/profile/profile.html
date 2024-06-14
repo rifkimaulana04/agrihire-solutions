@@ -1,0 +1,152 @@
+{% if session['role'] != 'customer' %}
+    {% extends "dashboard/index.html" %}
+{% else %}
+    {% extends "index.html" %}
+{% endif %}
+
+{% block title %}Profile{% endblock %}
+
+{% block css %}
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card mb-3" style="max-width: 600px; margin: 0 auto;">
+        <form id='user_profile_form' class="needs-validation" novalidate action="{{ url_for('profile') }}"
+            method="post">
+            <div class="card-header">
+                <div class="row align-items-center">
+                    <div class="col">
+                        <h3 class="text-center mb-0">My Profile</h3>
+                    </div>
+                    <div class="col-auto">
+                        <button type="button" id="editBtn" style="background: none; border: none;">
+                            <i class="fa-solid fa-pen-to-square main-color mx-1"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body text-start">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="first_name" class="form-label">First Name:</label>
+                        <input type="text" readonly required class="form-control form-control-plaintext editable"
+                            name="first_name" id="first_name" value="{{ profile.first_name }}">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="last_name" class="form-label">Last Name:</label>
+                        <input type="text" readonly required class="form-control form-control-plaintext editable"
+                            name="last_name" id="last_name" value="{{ profile.last_name }}">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="phone" class="form-label">Phone:</label>
+                        <input type="tel" readonly required class="form-control form-control-plaintext editable"
+                            id="phone" name="phone" pattern="0\d{8,10}"
+                            title="Please enter a valid phone number starting with 0 and containing 9 to 11 digits"
+                            value="{{ profile.phone|d('', true) }}">
+                    </div>
+                    {% if session['role'] !='customer' %}
+                    <div class="col-md-6">
+                        <label for="position" class="form-label">Position:</label>
+                        <input type="text" readonly required class="form-control form-control-plaintext editable"
+                            id="position" name="position" value="{{ profile.position }}">
+                    </div>
+                    {% endif %}
+                </div>
+                {% if session['role'] =='customer' %}
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="address1" class="form-label">Address 1:</label>
+                        <input type="text" readonly required class="form-control form-control-plaintext editable"
+                            id="address1" name="address1" value="{{ profile.address_line1 }}">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="address2" class="form-label">Address 2:</label>
+                        <input type="text" readonly class="form-control form-control-plaintext editable"
+                            id="address2" name="address2" value="{{ profile.address_line2 }}">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="suburb" class="form-label">Suburb:</label>
+                        <input type="text" readonly required class="form-control form-control-plaintext editable"
+                            id="suburb" name="suburb" value="{{ profile.suburb }}">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="city" class="form-label">City:</label>
+                        <input type="text" readonly required class="form-control form-control-plaintext editable"
+                            id="city" name="city" value="{{ profile.city }}">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="post_code" class="form-label">Post Code:</label>
+                        <input type="text" readonly required class="form-control form-control-plaintext editable"
+                            id="post_code" name="post_code" value="{{ profile.post_code }}">
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class=" text-center">
+                <button type="submit" id="submitBtn" class="btn btn-danger btn-block"
+                    style="background-color: #c51616; display: none;">Submit</button>
+                <button type="reset" id="cancelBtn" class="btn btn-secondary btn-block"
+                    style="display: none;">Cancel</button>
+            </div>
+
+        </form>
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+<script>
+    $(document).ready(function () {
+        // Function to toggle readonly attribute of form fields
+        function toggleReadOnly(status) {
+            $('.editable').prop('readonly', status);
+        }
+
+        // Function to toggle edit and submit buttons
+        function toggleButtons() {
+            $('#editBtn').toggle();
+            $('#submitBtn').toggle();
+            $('#cancelBtn').toggle();
+        }
+
+        // Add event listener to the edit button
+        $('#editBtn').click(function () {
+            toggleReadOnly(false); // Make editable
+            toggleButtons(); // Show submit and cancel buttons, hide edit button
+            $('.editable').toggleClass("form-control-plaintext", false);
+            $('.editable').toggleClass("form-control", true);
+        });
+
+        // Add event listener to the cancel button
+        $('#cancelBtn').click(function () {
+            toggleReadOnly(true); // Make readonly
+            toggleButtons(); // Show edit button, hide submit button
+            $('.editable').toggleClass("form-control-plaintext", true);
+            $('.editable').toggleClass("form-control", false);
+        });
+        // Initially make form readonly and show edit button
+        toggleReadOnly(true);
+        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+        const forms = document.querySelectorAll('.needs-validation')
+        // Loop over them and prevent submission
+        Array.from(forms).forEach(form => {
+            form.addEventListener('submit', event => {
+                if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                }
+
+                form.classList.add('was-validated')
+            }, false)
+        })
+
+    });
+</script>
+{% endblock %}

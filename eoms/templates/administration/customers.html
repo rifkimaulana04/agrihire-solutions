@@ -1,0 +1,229 @@
+{% extends "dashboard/index.html" %}
+{% block title %}Customer{% endblock %}
+
+{% block css %}
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+    <h3 class="text-center mb-0">
+        {% if session['role'] == 'nmgr' or session['role'] == 'admin' or session['role'] == 'lmgr' %}
+        Customer Management
+        {% else %}
+        Customer List
+        {% endif %}
+    </h3><br>
+    <form method="post" action="{{ url_for('customers') }}" class="row g-3 align-items-end">
+        <div class="col-md-3 text-start">
+            <label for="first_name" class="form-label">First Name:</label>
+            <input class="form-control" type="text" id="search_first__name" name="first_name" value="{{ first_name }}">
+        </div>
+        <div class="col-md-3 text-start">
+            <label for="last_name" class="form-label">First Name:</label>
+            <input class="form-control" type="text" id="search_last__name" name="last_name" value="{{ last_name }}">
+        </div>
+        {% if session['role'] == 'nmgr' or session['role'] == 'admin' %}
+        <div class="col-md-3  text-start">
+            <label for="store_id" class="form-label">Store:</label>
+            <select class="form-control" id="store_id" name="store_id">
+                <option value="" {% if not store_id %} selected {% endif %}>All Stores:</option>
+                {% for store in store_list %}
+                <option value="{{ store.store_id | string }}" {% if store_id==(store.store_id | string) %} selected {%
+                    endif %}>{{ store.store_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        {% endif %}
+
+        <div class="col-md-3">
+            <button type="submit" class="btn btn-primary" data-toggle="tooltip" style="background: none; border: none;"
+                data-placement="top" title="Search"><i class="fas fa-search main-color mx-1"></i></button>
+        </div>
+    </form>
+    <hr>
+    <div style="height: 420px; overflow-y: auto;">
+        <table id="customer_list" class="table table-advance table-hover">
+            <thead style="position: sticky;top: 0;z-index: 999;">
+                <tr>
+                    <th>#</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Store</th>
+                    <th>Phone</th>
+                    <th>Is Active</th>
+                    {% if session['role'] != 'staff' %}
+                    <th>Action</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% if customer_list %}
+                {% for customer in customer_list %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ customer.first_name }}</td>
+                    <td>{{ customer.last_name }}</td>
+                    <td>{{ customer.store_name }}</td>
+                    <td>{{ customer.phone }}</td>
+                    <td>{{ 'Active' if customer.is_active == 1 else 'Inactive' }}</td>
+                    {% if session['role'] != 'staff' %}
+                    <td>
+                        <a type="button" data-toggle="tooltip" data-placement="top" href="#" title="Edit"
+                            data-bs-toggle="modal" data-bs-target="#customerModal" onclick="openModal('{{ customer.customer_id }}', '{{ customer.user_id }}',
+                            '{{ customer.first_name }}', '{{ customer.last_name }}', '{{ customer.phone }}', '{{ customer.address_line1 }}', 
+                            '{{ customer.address_line2 }}', '{{ customer.suburb }}', '{{ customer.city }}', 
+                            '{{ customer.post_code }}', '{{ customer.my_store }}', '{{ customer.store_name }}', '{{ customer.is_active }}')">
+                            <i class="far fa-edit main-color mx-1"></i>
+                        </a>
+                    </td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+                {% else %}
+                <tr>
+                    <td colspan="8" class="text-center">There is no data to be showed.</td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Edit/Add Modal -->
+<div class="modal fade" id="customerModal" tabindex="-1" aria-labelledby="customerModalLabel" aria-hidden="true"
+    data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="background: #c51616;">
+                <h5 class="modal-title" id="customerModalLabel" style="color: #FFFFFF;">Manage Customer</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                    onclick="refleshpage()"></button>
+            </div>
+            <div class="modal-body">
+                <form id="customerForm" action="#" method="POST">
+                    <div class="mb-3 text-start">
+                        <label for="store_id" class="form-label">Store</label>
+                        <input type="text" class="form-control" id="form_store_name" readonly>
+                        <input type="hidden" class="form-control" id="form_store_id" name="store_id">
+                    </div>
+                    <div class="mb-3 text-start">
+                        <label for="first_name" class="form-label ">First Name</label>
+                        <input type="text" class="form-control" id="form_first_name" name="first_name">
+                    </div>
+                    <div class="mb-3 text-start">
+                        <label for="last_name" class="form-label ">Last Name</label>
+                        <input type="text" class="form-control" id="form_last_name" name="last_name" required>
+                        <div id="server_error" class="invalid-feedback">
+                            Please Enter Valid Last Name!
+                        </div>
+                    </div>
+                    <div class="mb-3 text-start">
+                        <label for="phone" class="form-label">Phone</label>
+                        <input type="phone" class="form-control" id="form_phone" name="phone">
+                    </div>
+                    <div class="mb-3 text-start">
+                        <label for="address_line1" class="form-label">Address line1</label>
+                        <input type="address_line1" class="form-control" id="form_address_line1" name="address_line1">
+                    </div>
+                    <div class="mb-3 text-start">
+                        <label for="address_line2" class="form-label">Address line2</label>
+                        <input type="address_line2" class="form-control" id="form_address_line2" name="address_line2">
+                    </div>
+                    <div class="mb-3 text-start">
+                        <label for="suburb" class="form-label">Suburb</label>
+                        <input type="suburb" class="form-control" id="form_suburb" name="suburb">
+                    </div>
+                    <div class="mb-3 text-start">
+                        <label for="city" class="form-label">City</label>
+                        <input type="city" class="form-control" id="form_city" name="city">
+                    </div>
+                    <div class="mb-3 text-start">
+                        <label for="post_code" class="form-label">Post Code</label>
+                        <input type="post_code" class="form-control" id="form_post_code" name="post_code">
+                    </div>
+                    <div class="mb-3 text-start">
+                        <label for="status" class="form-label">Status</label>
+                        <select class="form-control" id="form_status" name="status">
+                            <option value="1">Active</option>
+                            <option value="0">Inactive</option>
+                        </select>
+                    </div>
+                    <input type="hidden" name="customer_id" id="form_customer_id">
+                    <input type="hidden" name="user_id" id="form_user_id">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                        onclick="refleshpage()">Cancel</button>
+                    <button type="submit" class="btn btn-danger" id="confirmSaveBtn">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+
+{% block js %}
+<script>
+    function openModal(customer_id = '', user_id = '', first_name = '', last_name = '', phone = '', addressLine1 = '', addressLine2 = '', suburb = '', city = '', postCode = '', store_id = '', store_name = '', status = '') {
+        document.getElementById('form_customer_id').value = customer_id;
+        document.getElementById('form_user_id').value = user_id;
+        document.getElementById('form_first_name').value = first_name;
+        document.getElementById('form_last_name').value = last_name;
+        document.getElementById('form_phone').value = phone;
+        document.getElementById('form_address_line1').value = addressLine1;
+        document.getElementById('form_address_line2').value = addressLine2;
+        document.getElementById('form_suburb').value = suburb;
+        document.getElementById('form_city').value = city;
+        document.getElementById('form_post_code').value = postCode;
+        document.getElementById('form_store_id').value = store_id;
+        document.getElementById('form_store_name').value = store_name;
+        document.getElementById('form_status').value = status;
+        $('#customerModal').modal('show');
+    }
+
+
+    document.getElementById('customerForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+        // Get the form data
+        var formData = new FormData(this);
+        if (validateForm()) {
+            fetch('/manage_customer', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        $('#customerModal').modal('hide');
+                        window.location.href = '/customers';
+                    } else {
+                        $('#server_error').text(data.message).show();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+
+                });
+        }
+
+    });
+    function validateForm() {
+        var isValid = true;
+
+        var last_name = document.getElementById('form_last_name').value;
+        if (last_name === "") {
+            isValid = false;
+            document.getElementById('form_last_name').classList.add('is-invalid');
+        } else {
+            document.getElementById('form_last_name').classList.remove('is-invalid');
+        }
+
+        return isValid;
+    }
+
+    function refleshpage() {
+        window.location.reload(); // Reload the current page
+    }
+</script>
+{% endblock %}

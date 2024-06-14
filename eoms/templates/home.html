@@ -1,0 +1,234 @@
+{% extends "index.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="../../static/css/visitor/home.css">
+{% endblock %}
+
+{% block content %}
+<section>
+    <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+          <div class="carousel-item active">
+            <div class="carousel-img">
+                <img src="..\static\images\homepage\StockCake-Farming Heavy Machinery_1715502785.jpg" class="d-block w-100"  alt="...">
+            </div>
+            <div class="carousel-caption d-none d-md-block">
+              <h1>Empowering your harvest, enhancing your yield</h1>
+              <button class="cate-button p-1 view-store">Find Your Local Store</button>
+            </div>
+          </div>
+          <div class="carousel-item">
+            <div class="carousel-img">
+                <img src="..\static\images\homepage\StockCake-Farm Irrigation Equipment_1715503995.jpg" class="d-block w-100" alt="...">
+            </div>
+            <div class="carousel-caption d-none d-md-block">
+              <h1>Empowering your projects with innovative tools and equipment</h1>
+              <button class="cate-button p-1 view-store">Find Your Local Store</button>
+            </div>
+          </div>
+          <div class="carousel-item">
+            <div class="carousel-img">
+                <img src="..\static\images\homepage\StockCake-Farm Equipment Discussion_1715504081.jpg" class="d-block w-100" alt="...">
+            </div>
+            <div class="carousel-caption d-none d-md-block">
+              <h1>A team of rental experts guiding you to thoughtful solutions</h1>
+              <button class="cate-button p-1 view-store">Find Your Local Store</button>
+            </div>
+          </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
+</section>
+
+<section class="container my-4">
+    <div class="text-center py-4">
+        <h1>Just Reserve, Rent and Return</h1>
+    </div>
+
+    <div class="row my-3">
+        <div class="col position-relative">
+            <div>
+                <div class="rounded-circle text-center step-style">
+                    <div class="d-flex align-items-center justify-content-center icon-style">
+                        <i class="fa-solid fa-1"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="border rounded-3 px-3 py-4 text-center h-100">
+                <h4>Reserve your equipment</h4>
+                <p>Browse our catalog, find the equipment you need, then add to cart.</p>
+            </div>
+        </div>
+        <div class="col position-relative">
+            <div >
+                <div class="rounded-circle text-center step-style">
+                    <div class="d-flex align-items-center justify-content-center icon-style">
+                        <i class="fa-solid fa-2"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="border rounded-3 px-3 py-4 text-center h-100">
+                <h4>Pick up in store</h4>
+                <p>Select your local store, then pick up your tools and equiments in store.</p>
+            </div>
+        </div>
+        <div class="col position-relative">
+            <div>
+                <div class="rounded-circle text-center step-style">
+                    <div class="d-flex align-items-center justify-content-center icon-style">
+                        <i class="fa-solid fa-3" style="color: white;"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="border rounded-3 px-3 py-4 text-center h-100">
+                <h4>Return your equipment</h4>
+                <p>Bring back to store and let us know if you want to extend your rental.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row my-3">
+        <div class="col">
+        </div>
+        <div class="col">
+            <div class="w-100">
+                <button class="w-100 bg-white main-color fw-bold view-equipment">Start Renting</button>
+            </div>
+        </div>
+        <div class="col">
+        </div>
+    </div>
+
+</section>
+
+<section class="container my-4">
+    <div class="cardwrapper">
+            <div class="row">
+                <div class="col">
+                    <a class="multicard__card" href="{{url_for('view_stores')}}">
+                        <div class="multicard__card-img">
+                            <img class="w-100" loading="lazy" alt="FIND A BRANCH" srcset="..\static\images\homepage\branch_nz.jpg">
+                        </div>
+                        <div class="multicard__card-content">
+                            <div class="eyebrow multicard__card-eyebrow fw-bold">FIND A BRANCH</div>
+                            <h4 class="multicard__card-title main-color">Discover our 18 branches across New Zealand</h4>
+                            <div class="multicard__card-description bodysmall">
+                                <p>Locate the nearest branch to you and access our comprehensive range of agricultural machinery rental services conveniently spread across 200 locations in New Zealand.</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col">
+                    <a class="multicard__card" href="{{url_for('search_equipment')}}">
+                        <div class="multicard__card-img">
+                            <img class="w-100" loading="lazy" alt="FIND EQUIPMENT" srcset="..\static\images\homepage\equipment.jpg">
+                        </div>
+                        <div class="multicard__card-content">
+                            <div class="eyebrow multicard__card-eyebrow fw-bold">FIND EQUIPMENT</div>
+                            <h4 class="multicard__card-title main-color">Explore our wide range of over 300 types of agricultural machinery</h4>
+                            <div class="multicard__card-description bodysmall">
+                                <p>Browse through our diverse selection of over 300 types of agricultural machinery, designed to cater to the varying needs of farmers and agricultural businesses.</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+      </div>
+</section>
+
+<section class="container my-4">
+    <div>
+        <h1>Discover Promotional Products</h1>
+    </div>
+    <div class="row">
+        {% for product in promo_products[:3] %}
+        <div class="col m-3">
+            
+            <div class="product-card border border-1 d-flex">
+                <div class="w-40 mx-2">
+                    <a href="{{ url_for('view_equipment_detail', category_code=product.category_code, product_code=product.product_code) }}">
+                        <img class="w-100" loading="lazy" alt="FIND EQUIPMENT" src="{{ url_for('static', filename='images/product/' ~ product.image) }}">
+                    </a>
+                </div>
+                <div class="d-flex flex-column justify-content-between">
+                    <a href="{{ url_for('view_equipment_detail', category_code=product.category_code, product_code=product.product_code) }}">
+                        <h5>{{product.name}}</h5>
+                    </a>
+                    <div class="mt-auto"></div>
+                    <div>
+                        <p class="fs-6 fw-semibold">Get {{(product.disc_rate)|round(0)}}% off</p>
+                        <p class="fs-6">Use code</p>
+                        <p class="fs-6 fw-semibold">{{product.promo_code}}</p>
+                        </div>
+                </div>
+            </div>
+            
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+
+<div class="cate-bg">
+    <section class="container  my-4">
+        <div class="text-center py-4">
+            <h1>Popular Equipment</h1>
+        </div>
+        <div class="row">
+            {% for product in home_popular_products %}
+            <div class="col my-3" >
+                <a href="{{ url_for('view_equipment_detail', category_code=product.category_code, product_code=product.product_code) }}">
+                    <div class="product-card border border-1 d-flex h-100 bg-white " style="border-radius: 20px;">
+                        <div class="w-40 mx-2">
+                        <img class="w-100" loading="lazy" alt="FIND EQUIPMENT" src="{{ url_for('static', filename='images/product/' ~ product.image) }}">
+                        </div>
+                        <div class="d-flex flex-column justify-content-between">
+                            <div style="font-size: larger;" class="p-2">{{product.name}}</div>
+                            <div style="font-size:x-small; font-weight: 400">{{product.product_code}}</div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="row py-3">
+            <div class="col">
+            </div>
+            <div class="col">
+                <div class="w-100">
+                    <button class="w-100 cate-button view-equipment">View All Equipment</button>
+                </div>
+            </div>
+            <div class="col">
+            </div>
+        </div>
+    </section>
+</div>
+
+
+{% endblock %}
+
+
+{% block js %}
+<script>
+    $(document).ready(function() {
+        $('.view-store').on('click', function() {
+            window.location.href = "{{url_for('view_stores')}}";
+        });
+
+        $('.view-equipment').on('click', function() {
+            window.location.href = "{{url_for('search_equipment')}}";
+        });
+    });
+</script>
+{% endblock %}

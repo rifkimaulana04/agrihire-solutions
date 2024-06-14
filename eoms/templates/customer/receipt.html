@@ -1,0 +1,101 @@
+{% extends "index.html" %}
+{% block title %} Receipt {% endblock %}
+
+{% block css %}
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .receipt-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .receipt-header img {
+            max-width: 150px;
+        }
+        .receipt-details, .receipt-items, .receipt-totals {
+            margin-bottom: 20px;
+        }
+        .receipt-footer {
+            text-align: center;
+            margin-top: 30px;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+<hr>
+    <div class="container">
+        <div class="receipt-header">
+            <img src="{{url_for('static', filename='/images/logo/logo_component.svg')}}" alt="logo" class="logo" style="width: 120px; height: auto;">
+            <hr>
+            <p>Store Name: {{ booking_detail.store_name if booking_detail else '' }}</p>
+            <p>Phone: {{ booking_detail.store_phone if booking_detail else '' }} | Email:{{ booking_detail.email if booking_detail else '' }}</p>
+            <p>Address: {{ booking_detail.store_address_line1 if booking_detail else '' }} {{ booking_detail.store_address_line2 if booking_detail else '' }} 
+                {{ booking_detail.store_suburb if booking_detail else '' }}, {{ booking_detail.store_city if booking_detail else '' }}, {{ booking_detail.store_post_code if booking_detail else '' }}</p>
+            <hr>
+        </div>
+
+        <div class="receipt-details">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Customer Details</h5>
+                    <p>Customer Name:{{ booking_detail.first_name if booking_detail else '' }} {{ booking_detail.last_name if booking_detail else '' }}</p>
+                    <p>Phone: {{ booking_detail.phone if booking_detail else '' }}</p>
+                    <p>Address:{{ booking_detail.address_line1 if booking_detail else '' }} {{ booking_detail.address_line2 if booking_detail else '' }}
+                         {{ booking_detail.suburb if booking_detail else '' }}, {{ booking_detail.city if booking_detail else '' }}, {{ booking_detail.post_code if booking_detail else '' }}</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <h5>Receipt Details</h5>
+                    <p>Booking ID: # {{ booking_detail.booking_id if booking_detail else '' }}</p>
+                    <p>Date(NZ Time): {{ booking_detail.pay_date.strftime('%d/%m/%Y %H:%M:%S') if booking_detail else '' }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="receipt-items">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Equipment</th>
+                        <th>Machine SN</th>
+                        <th>Quantity</th>
+                        <th>Start Time</th>
+                        <th>End Time</th>
+                        <th>Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in booking_item_list %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.sn }}</td>
+                        <td>1</td>
+                        <th>{{ item.hire_from.strftime('%d/%m/%Y %H:%M:%S') }}</th>
+                        <th>{{ item.hire_to.strftime('%d/%m/%Y %H:%M:%S') }}</th>
+                        <td>${{ item.hire_rate }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="receipt-totals">
+            <div class="row justify-content-end">
+                <div class="col-md-6 text-end">
+                    <p><strong>GST (15%):</strong> ${{ gst }}</p>
+                    <p><strong>Total Amount:</strong> ${{ booking_detail.amount if booking_detail and booking_detail.amount else '0.00' }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="receipt-footer">
+            <p>Thank you for your business!</p>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script></script>
+{% endblock %}

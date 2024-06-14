@@ -1,0 +1,350 @@
+{% extends "index.html" %}
+{% block title %}Pending Bookings {% endblock %}
+
+{% block css %}
+<style>
+    /* Custom CSS to make entire row clickable */
+    .card-header {
+        cursor: pointer;
+    }
+
+    .min-height {
+        min-height: 500px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<section class="container min-height">
+    <h1>Current Bookings</h1>
+
+    <div class="row">
+        <div class="col-8"></div>
+        <div class="col-4 d-flex justify-content-end">
+            <!-- Filter Buttons -->
+            <label for="filter-select" class="mr-2 align-self-center">Filter by:</label>
+            <select id="filter-select" class="form-control w-auto">
+                <option value="all">All</option>
+                <option value="this-week">This Week</option>
+                <option value="this-month">This Month</option>
+                <option value="three-months">Within Three Months</option>
+                <option value="six-months">Within Six Months</option>
+                <option value="this-year">This Year</option>
+            </select>
+        </div>
+    </div>
+    </div>
+
+
+    <div class="container">
+        <div id="accordion" class="accordion-clickable">
+        {% if allBookingList.items() %}
+            {% for booking_id, booking_items in allBookingList.items() %}
+            <!--  status == 1 is completed, status == 0 active, status == -1 void-->
+            {% if booking_items.status != -1 %}
+            <div class="card my-3" data-booking-id="{{ booking_id }}">
+                <div class="card-header d-flex justify-content-between" id="heading{{ booking_id }}"
+                    data-toggle="collapse" data-target="#collapse{{ booking_id }}" aria-expanded="true"
+                    aria-controls="collapse{{ booking_id }}">
+                    <div>
+                        <h5 class="mb-0">
+                            Booking ID: #<p id="bookingID">{{ booking_id }}</p>
+                        </h5> 
+                        <!-- <a href="{{ url_for('receipt', booking_id=booking_id) }}"
+                            class="btn btn-secondary mt-2">Receipt</a> -->
+                    </div>
+
+                    <h5 class="mb-0">
+                        Booking Create Date: {{ booking_items.create_date.strftime('%d/%m/%Y %H:%M:%S') }}
+                    </h5>
+                </div>
+
+                <div id="collapse{{ booking_id }}" class="collapse" aria-labelledby="heading{{ booking_id }}"
+                    data-parent="#accordion">
+                    <div class="card-body">
+                        {% for booking in booking_items.booking_items %}
+                        <div class="row border rounded-4 mb-3 p-1 booking-item"
+                            data-hire-from="{{ booking.hire_from }}">
+                            <div class="col-5">
+                               
+                                <p class="mb-0"><strong>Product Specification:</strong> {{ booking.specs }}</p>
+                            </div>
+                            <div class="col-7">
+                                <p class="mb-0"><strong>Product Code:</strong> {{ booking.product_code }}</p>
+                                <p class="mb-0"><strong>S/N:</strong> {{ booking.sn }}</p>
+                                <p class="mb-0"><strong>Period:</strong> From {{ booking.hire_from.strftime('%d/%m/%Y %H:%M:%S') }} To {{
+                                    booking.hire_to.strftime('%d/%m/%Y %H:%M:%S') }}</p>
+                                <p class="mb-0"><strong>Product Description:</strong> {{ booking.desc }}</p>
+                                <button class="btn btn-primary float-end mb-1 extend-period-btn"
+                                    data-bookingitem-id="{{ booking.booking_item_id }}"
+                                    data-hiretodate="{{ booking.hire_to }}" data-price="{{ booking.price_a }}">Extend my
+                                    period</button>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        <button class="float-end mb-3 px-2 cancel-booking-btn" data-booking-id="{{ booking_id }}">Cancel
+                            Booking</button>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            {% else %}
+            <h2 class="text-center mt-5">Currently, you do not have any booking</h2>
+            {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+
+<div class="modal fade" id="cancelBookingModal" tabindex="-1" aria-labelledby="cancelBookingModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="cancelBookingModalLabel">Confirm Cancel Booking</h5>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to cancel this booking?
+            </div>
+            <input type="number" class="d-none" id="bookingIdInput">
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger" id="confirmCancelBtn">Yes, Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Change Period Modal -->
+<div class="modal fade" id="changePeriodModal" tabindex="-1" aria-labelledby="changePeriodModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="changePeriodModalLabel">Change Booking Period</h5>
+            </div>
+            <div class="modal-body">
+                <form id="changePeriodForm" method="POST">
+                    <div class="mb-3">
+                        <label for="hireTo" class="form-label">New Hire To:</label>
+                        <input type="datetime-local" class="form-control" id="hireTo" name="hire_to" required>
+                    </div>
+                </form>
+                <input type="number" class="d-none" id="bookingitemIdInput">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="confirmChangePeriodBtn">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Payment Details -->
+<div class="modal fade" id="payment_info" tabindex="-1" aria-labelledby="changePeriodModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="changePeriodModalLabel">Change Booking Period</h5>
+            </div>
+            <div class="modal-body row">
+                <div class="col-md-6 section-card">
+                    <h4>Extend Period Info</h4>
+                    <div>
+                        <div>Total Price per day: <p id="price"></p>
+                        </div>
+                        <div>Days: <p id="days"></p>
+                        </div>
+                        <input id="hire_from_time" class="d-none" value="">
+                    </div>
+                </div>
+                <div id="payment_in" class="col-md-6 section-card">
+                    <div class="container">
+                        <h4>Payment Details</h4>
+                        <div class="form-group">
+                            {{ form.card_number.label }}
+                            {{ form.card_number(class="form-control") }}
+                        </div>
+                        <div class="form-group">
+                            {{ form.card_name.label }}
+                            {{ form.card_name(class="form-control") }}
+                        </div>
+                        <div class="form-group">
+                            {{ form.card_expiry.label }}
+                            {{ form.card_expiry(class="form-control") }}
+                        </div>
+                        <div class="form-group">
+                            {{ form.card_cvv.label }}
+                            {{ form.card_cvv(class="form-control") }}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="confirmPayment">Make Payment</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}
+
+{% block js %}
+<script>
+    $(document).ready(function () {
+        $('.collapse').collapse('hide');
+
+        $('.accordion-clickable .card-header').click(function () {
+            var $collapse = $(this).next('.collapse');
+            // Hide all other collapses
+            $('.collapse').not($collapse).collapse('hide');
+            $collapse.collapse('toggle');
+        });
+
+        $('#filter-select').change(function () {
+            var filter = $(this).val();
+            var now = new Date();
+            $('.card').show();
+
+            $('.card').each(function () {
+                var showCard = true;
+                $(this).find('.booking-item').each(function () {
+                    var hireFrom = new Date($(this).data('hire-from'));
+
+                    switch (filter) {
+                        case 'this-week':
+                            var endOfWeek = new Date();
+                            endOfWeek.setDate(now.getDate() + (7 - now.getDay()));
+                            showCard = hireFrom > now && hireFrom <= endOfWeek;
+                            break;
+                        case 'next-month':
+                            var endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+                            showCard = hireFrom > now && hireFrom <= endOfMonth;
+                            break;
+                        case 'next-three-months':
+                            var threeMonthsAhead = new Date();
+                            threeMonthsAhead.setMonth(now.getMonth() + 3);
+                            showCard = hireFrom > now && hireFrom <= threeMonthsAhead;
+                            break;
+                        case 'next-six-months':
+                            var sixMonthsAhead = new Date();
+                            sixMonthsAhead.setMonth(now.getMonth() + 6);
+                            showCard = hireFrom > now && hireFrom <= sixMonthsAhead;
+                            break;
+                        case 'next-year':
+                            var endOfYear = new Date(now.getFullYear() + 1, 0, 0);
+                            showCard = hireFrom > now && hireFrom <= endOfYear;
+                            break;
+                        case 'all':
+                        default:
+                            showCard = true;
+                    }
+                    if (!showCard) {
+                        return false; // if one item in the card is out of the range, hide the whole card
+                    }
+                });
+                if (!showCard) {
+                    $(this).hide();
+                }
+            });
+        });
+
+        $('.cancel-booking-btn').click(function () {
+            // Get the booking ID
+            var bookingId = $(this).data('booking-id');
+            // Store the booking ID in a hidden field
+            $('#bookingIdInput').val(bookingId);
+            // Show the modal dialog
+            $('#cancelBookingModal').modal('show');
+        });
+
+        // Event triggered when the confirm cancel button is clicked
+        $('#confirmCancelBtn').click(function () {
+            // Get the booking ID
+            var bookingId = $('#bookingIdInput').val();
+            // Build the cancel booking URL
+            var cancelUrl = "{{ url_for('cancelbooking', id=0) }}".replace('0', bookingId);
+            // Redirect to the cancel booking route
+            window.location.href = cancelUrl;
+        });
+
+
+        $('.extend-period-btn').click(function () {
+            // Get the hire Date
+            var hireToDate = $(this).data('hiretodate');
+            var price = $(this).data('price');
+            var booking_id = $(this).data('booking_id');
+            $('#price').text(price);
+            $('#hire_from_time').val(hireToDate)
+            $('#bookingID').text(booking_id)
+            console.log(booking_id)
+            // Get the booking ID
+            var bookingitemId = $(this).data('bookingitem-id');
+            // Store the booking ID in a hidden field
+            $('#bookingitemIdInput').val(bookingitemId);
+            // Show the change period modal
+            $('#changePeriodModal').modal('show');
+            $('#hireTo').val(hireToDate);
+            $('#hireTo').attr('min', hireToDate);
+        });
+
+        // Event triggered when the confirm change period button is clicked
+        $('#confirmPayment').click(function () {
+            event.preventDefault(); // Prevent the default form submission
+            // Get the required input values
+            var cardNumber = $('#card_number').val().trim();
+            var cardName = $('#card_name').val().trim();
+            var cardExpiry = $('#card_expiry').val().trim();
+            var cardCvv = $('#card_cvv').val().trim();
+            var hireTo = $('#hireTo').val().trim();
+            var bookingitemId = $('#bookingitemIdInput').val().trim();
+
+            // Check if all fields are filled
+            if (!cardNumber || !cardName || !cardExpiry || !cardCvv || !hireTo || !bookingitemId) {
+                alert("Please fill in all the required fields.");
+                return;
+            }
+            // Get the booking ID
+            var bookingitemId = $('#bookingitemIdInput').val();
+            // Get the new hire from and hire to dates
+            var hireTo = $('#hireTo').val();
+            var price = $('#price').text();
+            var days = $('#days').text();
+            var Total = price * days
+            var booking_id = $('#bookingID').text()
+            // Build the extend period URL
+            var extendPeriodUrl = "{{ url_for('extendperiod', id=0) }}".replace('0', bookingitemId);
+            // Send a POST request to the extend period route with the new dates
+            $.post(extendPeriodUrl, { hire_to: hireTo, total: Total, booking_id: booking_id }, function (data) {
+                // Redirect to the mybooking route after successful extension
+                window.location.href = "{{ url_for('mybooking') }}";
+            });
+        });
+
+        $('#confirmChangePeriodBtn').click(function () {
+            var hireTo = new Date($('#hireTo').val());
+            var hirefrom = new Date($('#hire_from_time').val());
+            // Calculate the difference in milliseconds
+            var differenceInMilliseconds = hireTo - hirefrom;
+
+            // Convert milliseconds to hours
+            var differenceInHours = differenceInMilliseconds / (1000 * 60 * 60);
+
+            // Calculate the number of days, rounding up if necessary
+            var differenceInDays = Math.ceil(differenceInHours / 24);
+            $('#days').text(differenceInDays);
+
+            $('#payment_info').modal('show');
+        });
+
+
+
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Bootstrap CSS link -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <script src="https://kit.fontawesome.com/e832c2aeff.js" crossorigin="anonymous"></script>
+  <link href="{{url_for('static', filename='/css/index.css')}}" rel="stylesheet">
+  <!-- Tempus Dominus Styles -->
+  <link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.9.4/dist/css/tempus-dominus.min.css"
+    crossorigin="anonymous">
+  <title>{% block title %}{% endblock %}</title>
+  {% block css %}
+  {% endblock %}
+</head>
+
+{{ custom_style|safe }}
+
+<body>
+
+  <header>
+    <nav class="navbar border-top mt-2">
+      <section class="container">
+        <div class="left-nav d-flex justify-content-center align-items-center">
+          <a href="{{url_for('home')}}" class="logo-link">
+            <img src="{{url_for('static', filename='/images/logo/logo_component.svg')}}" alt="logo" class="logo"
+              style="width: 120px; height: auto;">
+          </a>
+          <form action="{{ url_for('search_equipment') }}" method="get">
+            <div class="input-group border rounded-pill mx-5">
+              <input type="search" placeholder="What are you looking for?" aria-describedby="button-addon3"
+                class="form-control bg-none border-0" name="search">
+              <div class="input-group-append border-0">
+                <button id="button-addon3" type="submit" class="btn btn-link text-success"><i
+                    class="fa fa-search text-danger"></i></button>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="right-nav d-flex">
+
+          <div class="mx-2">
+            <div class="btn-group">
+              <a href="{{url_for('view_stores')}}">
+                <i class="fa fa-store main-color"></i>
+              </a>
+            </div>
+          </div>
+          <div class="mx-2">
+            <div class="btn-group">
+              <a href="{{url_for('view_cart')}}" class="cart-icon">
+                <i class="fa fa-shopping-cart main-color"></i>
+                {% if cart_item_count > 0 %}
+                <span class="cart-badge">{{ cart_item_count }}</span>
+                {% endif %}
+              </a>
+            </div>
+          </div>
+
+          <div class="mx-2">
+            <div class="btn-group">
+              <a href="{{url_for('message')}}#b" class="bell-icon">
+                <i class="fa-solid fa-bell main-color"></i>
+                {% if notifications_count > 0 %}
+                <span class="bell-badge">{{ notifications_count }}</span>
+                {% endif %}
+              </a>
+            </div>
+          </div>
+
+          <div class="mx-5">
+            {% if session['loggedin'] %}
+            <div class="btn-group">
+              <div data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fa-solid fa-user main-color mx-1"></i>
+                <a href="#">{{session['email']}}</a>
+              </div>
+              <ul class="dropdown-menu dropdown-menu-end">
+                <li><a href="{{url_for('mybooking')}}"><i class="fa-solid fa-book main-color mx-1"></i>Current
+                    Bookings</a></li>
+                <li><a href="{{url_for('allbooking')}}"><i class="fa-solid fa-list-check main-color mx-1"></i>Bookings
+                    History</a></li>
+                <li><a href="{{url_for('profile')}}"><i class="fa fa-user main-color mx-1"></i>Profile</a></li>
+                <li><a href="{{url_for('change_password')}}"><i class="fa fa-key main-color mx-1"></i>Password</a></li>
+                <li><a href="{{url_for('message')}}"><i class="fa fa-comments main-color mx-1"></i>Message Us</a></li>
+                <li><a href="{{url_for('logout')}}"><i class="fa fa-right-from-bracket main-color mx-1"></i>Logout</a>
+                </li>
+              </ul>
+            </div>
+            {% else %}
+            <a href="{{url_for('login')}}" id="loginButton"><i class="fa fa-user main-color mx-1"></i>Login</a>
+            /
+            <a href="{{url_for('register')}}">Register</a>
+            {% endif %}
+          </div>
+        </div>
+      </section>
+    </nav>
+    <nav class="border-top navbar navbar-expand-lg border-bottom">
+      <section class="container">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
+          aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="{{url_for('home')}}">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="{{url_for('view_promotion')}}">Promotion</a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+                aria-expanded="false">
+                Equipment
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a class="dropdown-item" href="{{url_for('search_equipment')}}">All Equipment</a></li>
+                {% for category in category_options %}
+                <li><a class="dropdown-item"
+                    href="{{url_for('view_equipment_by_category', category_code=category.category_code)}}">{{category.name}}</a>
+                </li>
+                {% endfor %}
+              </ul>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="{{url_for('view_stores')}}">Find a Branch</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="{{url_for('view_news_list')}}">News</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="{{url_for('contact')}}">Contact Us</a>
+            </li>
+          </ul>
+        </div>
+      </section>
+    </nav>
+  </header>
+
+
+
+  <section class="content" style="min-height: 600px;">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+      {{ message }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    {% block content %}
+    {% endblock %}
+
+  </section>
+
+  <footer class="footer footer-bg-color">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-6 col-md-4 mt-4 col-lg-3 text-center text-sm-start">
+          <div class="information">
+            <h6 class="footer-heading text-uppercase text-white fw-bold">Information</h6>
+            <ul class="list-unstyled footer-link mt-4">
+              <li class="mb-1"><a href="#" class="text-white text-decoration-none fw-semibold">Events</a></li>
+              <li class="mb-1"><a href="#" class="text-white text-decoration-none fw-semibold">Our Team</a></li>
+              <li class="mb-1"><a href="#" class="text-white text-decoration-none fw-semibold">Upcoming Sale</a></li>
+              <li class=""><a href="#" class="text-white text-decoration-none fw-semibold">New Equipment</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-sm-6 col-md-4 mt-4 col-lg-3 text-center text-sm-start">
+          <div class="resources">
+            <h6 class="footer-heading text-uppercase text-white fw-bold">Resources</h6>
+            <ul class="list-unstyled footer-link mt-4">
+              <li class="mb-1"><a href="#" class="text-white text-decoration-none fw-semibold">DIY Advice</a></li>
+              <li class="mb-1"><a href="#" class="text-white text-decoration-none fw-semibold">Website Tutorials</a>
+              </li>
+              <li class="mb-1"><a href="#" class="text-white text-decoration-none fw-semibold">Community</a></li>
+              <li class=""><a href="{{url_for('t_and_c')}}" class="text-white text-decoration-none fw-semibold">Terms and Conditions</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-sm-6 col-md-4 mt-4 col-lg-2 text-center text-sm-start">
+          <div class="social">
+            <h6 class="footer-heading text-uppercase text-white fw-bold">Social</h6>
+            <ul class="list-inline my-4">
+              <li class="list-inline-item"><a href="#" class="text-white btn-sm btn btn-primary mb-2"><i
+                    class="fa-brands fa-facebook"></i></a></li>
+              <li class="list-inline-item"><a href="#" class="text-danger btn-sm btn btn-light mb-2"><i
+                    class="fa-brands fa-square-instagram"></i></a></li>
+              <li class="list-inline-item"><a href="#" class="text-white btn-sm btn btn-primary mb-2"><i
+                    class="fa-brands fa-square-twitter"></i></a></li>
+              <li class="list-inline-item"><a href="#" class="text-white btn-sm btn btn-success mb-2"><i
+                    class="fa-brands fa-square-whatsapp"></i></a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-sm-6 col-md-6 mt-4 col-lg-4 text-center text-sm-start">
+          <div class="contact">
+            <h6 class="footer-heading text-uppercase text-white fw-bold">Contact Us</h6>
+            <a href="tel:+" class="text-white mb-1 text-decoration-none d-block fw-semibold"><i
+                class="bi bi-telephone"></i> 123-456-78</a>
+            <a href="mailto:" class="text-white mb-1 text-decoration-none d-block fw-semibold"><i
+                class="bi bi-envelope"></i> info@agrihire.nz</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="text-center bg-dark text-white mt-4 p-1">
+      <p class="mb-0 fw-bold">2024 © AgriHire Solution, All Rights Reserved</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+    integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+
+  <script>
+    setTimeout(function () {
+      var alerts = document.querySelectorAll('.alert');
+      alerts.forEach(function (alert) {
+        alert.remove();
+      });
+    }, 4000);
+
+
+    document.getElementById('loginButton').addEventListener('click', function () {
+      var previousUrl = window.location.href;
+      document.cookie = "previousUrl=" + encodeURIComponent(previousUrl) + "; path=/";
+    });
+  </script>
+  {% block js %}
+
+  {% endblock %}
+</body>
+
+</html>

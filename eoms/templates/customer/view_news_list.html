@@ -1,0 +1,41 @@
+{% extends "index.html" %}
+{% block title %}AgriHire Solutions {% endblock %}
+
+{% block css %}
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+    <h3 class="text-center mb-0">News</h3><br>
+    <hr>
+    <div style="height: 420px; overflow-y: auto;">
+        <table id="news_list" class="table table-advance table-hover">
+            <thead style="position: sticky;top: 0;z-index: 999;">
+                <tr>
+                    <th>#</th>
+                    <th>Title</th>
+                    <th>Date</th>
+                    <th>Store</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for n in news_list %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td><a href="{{ url_for('customer_view_news_detail', news_id=n.news_id) }}">{{ n.title }}</a></td>
+                    <td>{{ n.create_date.strftime('%d/%m/%Y %H:%M:%S') }}</td>
+                    <th>{{ n.store_name }}</th>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}
+{% block js %}
+<script>
+
+</script>
+{% endblock %}

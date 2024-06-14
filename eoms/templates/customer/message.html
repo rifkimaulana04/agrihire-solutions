@@ -1,0 +1,164 @@
+{% extends "index.html" %}
+{% block title %}Messages{% endblock %}
+
+{% block css %}
+    <style>
+        a.text-decoration-none.text-dark {
+            color: inherit; 
+            text-decoration: none;
+        }
+       
+
+        .card-body {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            flex-grow: 1;
+        }
+
+       
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-center mt-4">
+    <div class="container m-3">
+        <!-- <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">se</li>
+            </ol>
+        </nav> -->
+        <div class="tabbable tabs-left">
+            <ul class="nav nav-tabs">
+                <li class="active nav-item"><a class="nav-link active" href="#a" data-toggle="tab">New Message</a></li>
+                <li class="nav-item"><a class="nav-link" href="#b" data-toggle="tab" id="read_message">View Messages</a></li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane active" id="a">
+                    <h1 class="mb-4">Send a New Message</h1>
+                    <div class="row">
+                        <form id='add_new_message_form' enctype="multipart/form-data" action="" method="POST">
+                            <div class="row mb-3">
+                                <label for="customer_name" class="col-md-2 form-label">Customer name</label>
+                                <div class="col-md-3">
+                                    <input type="text" class="form-control editable" name="customer_name" id="customer_name" value="{{profile.last_name}} {{profile.first_name}}" disabled>
+                                    <input type="text" class="form-control editable d-none" name="customer_id" id="customer_id" value="{{profile.customer_id}}">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label for="message_subject" class="col-md-2 form-label">Message subject</label>
+                                <div class="col-md-3">
+                                    <input type="text" class="form-control editable" name="subject" id="subject" placeholder="Please Create a subject" required>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label for="message_store" class="col-md-2 form-label">Choose store</label>
+                                <div class="col-md-3">
+                                    <select class="form-select" aria-label="" name="store_id">
+                                        {% for item in storeList %}
+                                        <option value="{{item.store_id}}">{{item.store_name}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label for="content" class="col-md-2 form-label">Content</label>
+                                <div class="col-md-4">
+                                    <textarea class="form-control w-100" id="content" name="content" value="" required></textarea>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-6 {% if msg %}alert alert-danger{% endif %}" role="alert">{{msg}}</div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col">
+                                    <button type="submit" id="submitBtn" class="btn btn-danger btn-block">Submit</button>
+                                    <button type="reset" id="cancelBtn" class="btn btn-light btn-block">Reset</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="tab-pane" id="b">
+                    <div class="container-fluid">
+                        <section class="container">
+                            {% for msg in message_list %}
+                            <a class="row m-2 border border-secondary rounded-3 {% if msg.status != 1 %}viewMsg{% endif %}" data-id='{{msg.message_id}}'>
+                                <div class="col-2 text-start fs-3">
+                                    {% if msg.status == 2 %}<i class="fa-solid fa-envelope-open main-color"></i>{% else %}<i class="fa-solid fa-envelope main-color "></i>{% endif %}
+                                </div>
+                                <div class="col-10 d-flex align-items-center">
+                                    <div class="px-2">
+                                        <strong class="text-uppercase">Message Subject: </strong> {{msg.subject}}
+                                    </div>
+                                    <div class="px-2">
+                                        <strong class="text-uppercase">Create Time: </strong> {{msg.create_date.strftime('%d/%m/%Y %H:%M:%S')}}
+                                    </div>
+                                    {% if msg.status == 1 %}
+                                    <div class="px-2">
+                                        <strong class="">Waiting for reply... </strong> 
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </a>
+                            {% endfor %}
+                        </section>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+          
+        
+    </div>
+</div>
+<!---------- message modal ---------->
+<div class="modal fade" id="custMsgModal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Messages</h4>
+            </div>
+            <div class="message-body">
+            </div>
+        </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block js %}
+
+    <script>
+         $(document).ready(function(){
+        $('.nav-tabs a').click(function(){
+            $(this).tab('show');
+        });
+
+        $('.viewMsg').click(function(){
+            var id = $(this).data('id');
+
+
+            $.ajax({
+            url: '/customer_read_message',
+            type: 'post',
+            data: { id: id },
+            success: function(data) {
+                $('.message-body').html(data.htmlresponse);
+                $('#custMsgModal').modal('show');
+            },
+            error: function(error) {
+                console.log('Error fetching data:', error);
+            }
+        });
+
+        });
+
+         // Detect URL hash and activate corresponding tab
+         var hash = window.location.hash;
+        if (hash) {
+            $('.nav-tabs a[href="' + hash + '"]').tab('show');
+        }
+    });
+    </script>
+{% endblock %}
