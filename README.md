@@ -262,8 +262,6 @@ agrihire/
 3. Set up Python development environment
 4. Configure IDE (recommended: VS Code)
 
-[Rest of the previous sections remain the same...]
-
 ## API Documentation
 
 ### Core APIs
