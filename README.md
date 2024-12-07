@@ -9,7 +9,7 @@
 
 A comprehensive web application for managing agricultural equipment rentals, inventory, bookings and customer relationships. Built with Python Flask and MySQL.
 
-![screenshot](path_to_screenshot.png)
+![screencapture-agrihireaq-pythonanywhere-2024-12-07-19_36_51](https://github.com/user-attachments/assets/49dc71c5-f128-4d59-8bd4-c5bcfffbbff3)
 
 ## Features
 
