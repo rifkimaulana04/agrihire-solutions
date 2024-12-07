@@ -1,6 +1,15 @@
-# AgriHire Solutions Equipment and Order Management System
+<div align="center">
+ <h1>AgriHire Solutions: Equipment and Order Management System</h1>
+ <img src="https://img.shields.io/badge/Status-Active-brightgreen"/>
+ <img src="https://img.shields.io/badge/License-MIT-blue"/>
+ <img src="https://img.shields.io/badge/Version-1.0.0-orange"/>
+ <img src="https://img.shields.io/badge/Python-3.8+-green"/>
+ <img src="https://img.shields.io/badge/Flask-3.0.2-red"/>
+</div>
 
 A comprehensive web application for managing agricultural equipment rentals, inventory, bookings and customer relationships. Built with Python Flask and MySQL.
+
+![screenshot](path_to_screenshot.png)
 
 ## Features
 
@@ -62,7 +71,7 @@ A comprehensive web application for managing agricultural equipment rentals, inv
 
 1. Clone the repository
 ```bash
-git clone https://github.com/ChanMeng666/AgriHire-Solutions.git
+git clone https://github.com/ChanMeng666/agrihire-solutions.git
 ```
 
 2. Create and configure database connection
@@ -96,229 +105,50 @@ pip install -r requirements.txt
 python run.py
 ```
 
-## Role-Based Access Control
-
-### Access Permissions Matrix
-
-| Function                   | Admin/National Manager | Local Manager/Staff      | Customer        |
-| -------------------------- | ---------------------- | ------------------------ | --------------- |
-| View Financial Reports     | Access all data        | Store-specific data only | No access       |
-| View Hire Status           | Access all data        | Store-specific data only | No access       |
-| View Maintenance Records   | Access all data        | Store-specific data only | No access       |
-| Stock/Order/Store Reports  | Full access            | View only                | No access       |
-| View Product Inventory     | Access all data        | Store-specific data only | View only       |
-| View Customer Orders       | Access all data        | Store-specific data only | Own orders only |
-| View Store Distribution    | Full access            | No access                | View only       |
-| User Roles Distribution    | Full access            | No access                | No access       |
-| User Activity Distribution | Full access            | No access                | No access       |
-| Equipment Management       | Full access            | Store-specific only      | No access       |
-| Staff Management           | Full access            | Store-specific only      | No access       |
-| Customer Management        | Full access            | View only                | No access       |
-| Promotion Management       | Full access            | Store-specific only      | No access       |
-
-### Test Accounts
+## Test Accounts
 
 All accounts use the same password: `Test1234!`
 
-#### Customer Accounts
-
+### Customer Accounts
 | Email           | Role     |
 | --------------- | -------- |
 | cust1@email.com | customer |
 | cust2@email.com | customer |
-| cust3@email.com | customer |
-| cust4@email.com | customer |
-| cust5@email.com | customer |
 
-#### Staff Accounts
-
-| Email              | Role  |
-| ------------------ | ----- |
-| staff1@agrihire.nz | staff |
-| staff2@agrihire.nz | staff |
-| staff3@agrihire.nz | staff |
-| staff4@agrihire.nz | staff |
-| staff5@agrihire.nz | staff |
-| staff6@agrihire.nz | staff |
-
-#### Management Accounts
-
-| Email                 | Role             |
-| --------------------- | ---------------- |
-| lmanager1@agrihire.nz | local manager    |
-| lmanager2@agrihire.nz | local manager    |
-| lmanager3@agrihire.nz | local manager    |
-| nmanager1@agrihire.nz | national manager |
-| admin1@agrihire.nz    | system admin     |
-
-## System Architecture
-
-### Core Modules
-
-- User Authentication & Authorization
-- Equipment Management
-- Booking System
-- Store Management 
-- Customer Relationship Management
-- Reporting & Analytics
-- Notification System
-- Promotional System
-
-### Database Structure
-
-Key tables include:
-
-- user
-- customer
-- staff
-- store
-- machine
-- product
-- booking
-- booking_item
-- cart
-- cart_item
-- promotion
-- service
-- message
-
-## Detailed Features
-
-### Equipment Management
-
-- Complete equipment lifecycle tracking
-- Maintenance scheduling and history
-- Real-time availability tracking
-- Multi-store inventory management
-- Equipment categorization and specification management
-
-### Booking System
-
-- Real-time availability checking
-- Flexible rental period management
-- Automatic price calculation
-- Multi-item bookings
-- Extension and cancellation handling
-- Payment processing integration
-
-### Customer Features
-
-- Self-service booking
-- Account management
-- Booking history
-- Equipment recommendations
-- Store locator with distance calculation
-- Direct messaging with store staff
-
-### Staff Features
-
-- Equipment check-in/check-out
-- Customer management
-- Booking management
-- Maintenance recording
-- Inventory management
-- Store-specific reporting
-
-### Management Features
-
-- Multi-store oversight
-- Staff management
-- Performance analytics
-- Financial reporting
-- Promotion management
-- System configuration
-
-### Promotional System
-
-- Flexible discount rules
-- Time-based promotions
-- Product-specific promotions
-- Store-specific promotions
-- Promotional code management
+### Staff Accounts
+| Email                 | Role          |
+| --------------------- | ------------- |
+| staff1@agrihire.nz    | staff         |
+| lmanager1@agrihire.nz | local manager |
+| admin@agrihire.nz     | admin         |
 
 ## Development
 
 ### Project Structure
-
 ```
 agrihire/
 ├── eoms/
-│   ├── model/         # Database models
+│   ├── model/         # Database models 
 │   ├── route/         # Route handlers
-│   ├── form/          # Form definitions
+│   ├── form/          # Form definitions 
 │   ├── static/        # Static assets
 │   └── templates/     # HTML templates
 ├── database/          # SQL scripts
 └── requirements.txt   # Dependencies
 ```
 
-### Development Environment Setup
-
-1. Install MySQL Server and MySQL Workbench
-2. Configure MySQL Server:
-   - Disable safe updates mode
-   - Enable stored procedures
-   - Configure for larger result sets
-3. Set up Python development environment
-4. Configure IDE (recommended: VS Code)
-
-## API Documentation
-
-### Core APIs
-
-- Authentication API
-- Equipment Management API
-- Booking Management API
-- Store Management API
-- Customer Management API
-- Reporting API
-
-Detailed API documentation is available in the project wiki.
-
-## Deployment
-
-### Requirements
-
-- Python 3.8+
-- MySQL 8.0+
-- Modern web browser with JavaScript enabled
-- Minimum 4GB RAM
-- 10GB storage space
-
-### Production Considerations
-
-- Configure proper security measures
-- Set up backup systems
-- Implement monitoring
-- Configure email system
-- Set up SSL certificates
-
-## Support
-
-For support and questions, please:
-
-1. Check the documentation
-2. Raise an issue in the repository
-3. Contact the development team
-
 ## Contributing
 
-1. Create a new branch
+1. Fork the repository
+2. Create a feature branch
 ```bash
 git checkout -b feature/AmazingFeature
 ```
+3. Commit your changes
+4. Push to the branch
+5. Open a Pull Request
 
-2. Commit your changes
-```bash 
-git commit -m 'Add some AmazingFeature'
-```
-
-3. Push to the branch
-```bash
-git push origin feature/AmazingFeature
-```
-
-4. Open a Pull Request
+Please read our [Code of Conduct](CODE_OF_CONDUCT.md) before contributing.
 
 ## License
 
@@ -326,6 +156,4 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 ## Contact
 
-Project Link: [ChanMeng666/AgriHire-Solutions](https://github.com/ChanMeng666/AgriHire-Solutions)
-
-Live Demo: [Home](https://agrihireaq.pythonanywhere.com/)
+Project Link: https://agrihireaq.pythonanywhere.com/
