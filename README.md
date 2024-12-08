@@ -13,6 +13,12 @@ A comprehensive web application for managing agricultural equipment rentals, inv
 
 ![屏幕截图 2024-12-07 194310](https://github.com/user-attachments/assets/ec1d7670-01fb-4d29-9aee-afe0d097c06d)
 
+![screencapture-agrihireaq-pythonanywhere-for-hire-CHAIN-CHAIN-40PTR-2024-12-09-02_00_11](https://github.com/user-attachments/assets/a69d4bfa-a6f3-4efe-87af-3bf7ee85f984)
+
+![screencapture-agrihireaq-pythonanywhere-cart-2024-12-09-02_00_27](https://github.com/user-attachments/assets/8ab6cc02-5fe2-4ce9-a1e7-28f1e793bb96)
+
+![screencapture-agrihireaq-pythonanywhere-review-booking-2024-12-09-02_01_19](https://github.com/user-attachments/assets/53e92a24-a9ed-4ebe-8d80-86842f6a8854)
+
 ![screencapture-agrihireaq-pythonanywhere-machines-2024-12-07-19_38_55](https://github.com/user-attachments/assets/f8c6ba10-fe21-444c-af2a-b2313b965f0f)
 
 ![screencapture-agrihireaq-pythonanywhere-stock-order-store-reports-2024-12-07-19_41_19](https://github.com/user-attachments/assets/aa540e8e-c3bb-4382-a2e9-74fd6c8ab570)
