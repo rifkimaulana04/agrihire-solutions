@@ -11,6 +11,16 @@ A comprehensive web application for managing agricultural equipment rentals, inv
 
 ![screencapture-agrihireaq-pythonanywhere-2024-12-07-19_36_51](https://github.com/user-attachments/assets/49dc71c5-f128-4d59-8bd4-c5bcfffbbff3)
 
+![屏幕截图 2024-12-07 194310](https://github.com/user-attachments/assets/ec1d7670-01fb-4d29-9aee-afe0d097c06d)
+
+![screencapture-agrihireaq-pythonanywhere-machines-2024-12-07-19_38_55](https://github.com/user-attachments/assets/f8c6ba10-fe21-444c-af2a-b2313b965f0f)
+
+![screencapture-agrihireaq-pythonanywhere-stock-order-store-reports-2024-12-07-19_41_19](https://github.com/user-attachments/assets/aa540e8e-c3bb-4382-a2e9-74fd6c8ab570)
+
+![screencapture-agrihireaq-pythonanywhere-calendar-2024-12-07-19_40_47](https://github.com/user-attachments/assets/8400d025-2e84-4161-866c-4e73d88bdf82)
+
+![screencapture-agrihireaq-pythonanywhere-promotion-2024-12-07-19_43_19](https://github.com/user-attachments/assets/eb4346cd-9b0a-4fac-b0f2-541750ea62a2)
+
 ## Features
 
 ### Customer Portal
