@@ -162,7 +162,7 @@ Please read our [Code of Conduct](CODE_OF_CONDUCT.md) before contributing.
 
 ## License
 
-Distributed under the MIT License. See `LICENSE` for more information.
+Distributed under the [Apache-2.0 license](LICENSE).
 
 ## Contact
 
