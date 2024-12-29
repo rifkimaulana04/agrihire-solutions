@@ -177,3 +177,7 @@ Distributed under the [Apache-2.0 license](LICENSE).
 ## Contact
 
 Project Link: https://agrihireaq.pythonanywhere.com/
+
+## 🙋‍♀ Author
+
+Created and maintained by [Chan Meng](https://github.com/ChanMeng666).
