@@ -11,6 +11,8 @@ A comprehensive web application for managing agricultural equipment rentals, inv
 
 <br/>
 
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/ChanMeng666/agrihire-solutions)
+
 [![👉Try It Now!👈](https://gradient-svg-generator.vercel.app/api/svg?text=%F0%9F%91%89Try%20It%20Now!%F0%9F%91%88&color=000000&height=60&gradientType=radial&duration=6s&color0=ffffff&template=pride-rainbow)](https://agrihireaq.pythonanywhere.com/)
 
 <br/>
