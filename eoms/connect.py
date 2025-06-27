@@ -1,0 +1,5 @@
+dbuser = "flaskuser"
+dbpass = "flaskpass"
+dbhost = "localhost"
+dbport = "3306"
+dbname = "agrihire"
